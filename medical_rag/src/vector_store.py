@@ -1,5 +1,15 @@
+import os
+import pickle
+
 import chromadb
 from config import CHROMA_PATH, COLLECTION_NAME, DISTANCE_METRIC
+
+
+SPARSE_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "data",
+    "sparse_embeddings.pkl"
+)
 
 
 def get_collection():
@@ -24,6 +34,14 @@ def upsert_vectors(ids, documents, embeddings, metadatas):
     print(f"Upserted {len(ids)} vectors into '{COLLECTION_NAME}'")
 
 
+def save_sparse_embeddings(ids, sparse_embeddings):
+    os.makedirs(os.path.dirname(SPARSE_PATH), exist_ok=True)
+    with open(SPARSE_PATH, "wb") as file:
+        pickle.dump(dict(zip(ids, sparse_embeddings)), file)
+
+    print(f"Saved {len(sparse_embeddings)} sparse vectors")
+
+
 if __name__ == "__main__":
 
     print("Starting ingestion...")
@@ -41,7 +59,7 @@ if __name__ == "__main__":
     print("PDF read successfully.")
     print("Creating chunks and embeddings...")
 
-    ids, documents, embeddings, metadatas = chunk_text(
+    ids, documents, embeddings, sparse_embeddings, metadatas = chunk_text(
         text,
         filepath
     )
@@ -56,5 +74,7 @@ if __name__ == "__main__":
         embeddings,
         metadatas
     )
+
+    save_sparse_embeddings(ids, sparse_embeddings)
 
     print("Ingestion completed!")

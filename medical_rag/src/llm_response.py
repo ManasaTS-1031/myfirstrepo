@@ -29,7 +29,7 @@ in the medical context.
 """
 
     response = client.models.generate_content(
-        model="gemini-3.6-flash",
+        model="gemini-3-flash-preview",
         contents=system_prompt,
         config=types.GenerateContentConfig(
             temperature=0.0

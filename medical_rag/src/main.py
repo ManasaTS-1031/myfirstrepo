@@ -85,7 +85,7 @@ def adaptive_rag_pipeline(
 
     else:
 
-        best_similarity = matches[0]["similarity"]
+        best_similarity = matches[0]["dense_similarity"] or 0.0
 
         print(
             f"Best similarity: {best_similarity:.4f}"
@@ -112,7 +112,7 @@ def adaptive_rag_pipeline(
             citations.append({
                 "type": "local",
                 "title": docname,
-                "similarity": match["similarity"]
+                "similarity": match["dense_similarity"] or 0.0
             })
 
             seen_local_docs.add(docname) 
